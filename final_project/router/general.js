@@ -5,7 +5,7 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-public_users.post("/register", (req,res) => {
+public_users.post("/register", async (req,res) => {
   //Write your code here
   const {username, password} = req.body;
 
@@ -17,7 +17,7 @@ public_users.post("/register", (req,res) => {
     return res.status(409).json({ error: 'Username already exists.' });
   }
 
-  users.push({username, password});
+  await users.push({username, password});
   
   
   return res.status(201).json({message: "User registration successful!"});
@@ -30,40 +30,39 @@ public_users.get('/',function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn',async (req, res) => {
   //Write your code here
   let isbn = req.params.isbn;
-  var filtered_by_isbn = books.filter(book => book.isbn === isbn);
-  return res.status(300).json({filtered_by_isbn});
+  var filtered_by_isbn = await books.filter(book => book.isbn === isbn);
+  return await res.status(300).json({filtered_by_isbn});
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author',async (req, res) => {
   //Write your code here
   let author = req.params.author;
 
   for(const key in books){
     const book = books[key];
     if(book.author === author){
-      return res.status(300).json({book});
+      return await res.status(300).json({book});
     }
     else{
       throw new Error("Book not found");
     }
   }
   
-  
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title',async (req, res) => {
   //Write your code here
   let title = req.params.title;
 
   for(const key in books){
     const book = books[key];
     if(book.title === title){
-      return res.status(300).json({book});
+      return await res.status(300).json({book});
     }
     else{
       throw new Error("Book not found");
